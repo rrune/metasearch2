@@ -141,6 +141,8 @@ pub async fn get(
             .into_response();
     }
 
+     println!("{:?}", config.bangs.map[0].0);
+
     let search_tab = params
         .get("tab")
         .and_then(|t| SearchTab::from_str(t).ok())

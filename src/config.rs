@@ -40,6 +40,9 @@ impl Default for Config {
                 )],
                 weight: vec![],
             },
+            bangs: BangsConfig { 
+                map: vec![],
+            },
         }
     }
 }
@@ -156,6 +159,7 @@ pub struct Config {
     // wrapped in an arc to make Config cheaper to clone
     pub engines: Arc<EnginesConfig>,
     pub urls: UrlsConfig,
+    pub bangs: BangsConfig,
 }
 
 #[derive(Deserialize, Debug)]
@@ -166,6 +170,7 @@ pub struct PartialConfig {
     pub image_search: Option<PartialImageSearchConfig>,
     pub engines: Option<PartialEnginesConfig>,
     pub urls: Option<PartialUrlsConfig>,
+    pub bangs: Option<PartialBangsConfig>,
 }
 
 impl Config {
@@ -181,6 +186,7 @@ impl Config {
             self.engines = Arc::new(engines);
         }
         self.urls.overlay(partial.urls.unwrap_or_default());
+        self.bangs.overlay(partial.bangs.unwrap_or_default());
     }
 }
 
@@ -409,5 +415,33 @@ impl UrlsConfig {
             let b_len = b.path.len() + b.host.len();
             b_len.cmp(&a_len)
         });
+    }
+}
+
+// bangs
+#[derive(Deserialize, Debug, Default)]
+pub struct PartialBangsConfig {
+    #[serde(default)]
+    pub map: HashMap<String, String>,
+}
+
+#[derive(Debug, Clone)]
+pub struct BangsConfig {
+    pub map: Vec<(String, String)>,
+}
+
+impl BangsConfig {
+    pub fn overlay(&mut self, partial: PartialBangsConfig) {
+        println!("{:?}", partial.map);
+        for (bang, redirect) in partial.map { 
+            if redirect.is_empty() {
+                // setting the value to an empty string removes it
+                let index = self.map.iter().position(|(u, _)| u == &bang);
+                // swap_remove is fine because the order of this vec doesn't matter
+                self.map.swap_remove(index.unwrap());
+            } else {
+                self.map.push((bang, redirect));
+            }
+        }    
     }
 }
