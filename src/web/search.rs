@@ -141,7 +141,34 @@ pub async fn get(
             .into_response();
     }
 
-     println!("{:?}", config.bangs.map[0].0);
+    // check if query contains a bang
+    if query.contains("!") {
+        // get the index of the !
+        let index = query.chars().position(|c| c == '!').unwrap();
+        // get the bang
+        let query_bang = query[(index + 1)..].split_whitespace().next().unwrap();
+
+        // iterate over every bang in config
+        for bang in &config.bangs.list {
+            // if correct one found, redirect
+            if bang.0 == query_bang {
+                // redirect location
+                let cleaned_query = query.replace(&format!("!{}", query_bang), "").to_owned();
+                let location= bang.1.clone().replace("%s", &cleaned_query);
+                return (
+                    StatusCode::FOUND,
+                    [
+                        (header::LOCATION, location),
+                        (header::CONTENT_TYPE, "text/html; charset=utf-8".to_owned()),
+                    ],
+                    Body::from(
+                        "<a href=\"/\">Bang used, click here to go to destination</a>",
+                    ),
+                )
+                    .into_response();
+            }
+        }
+    }
 
     let search_tab = params
         .get("tab")

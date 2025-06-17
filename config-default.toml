@@ -27,3 +27,9 @@ api = false
 # priority.
 # "quora.com" = 0.1
 # ".quora.com" = 0.1
+
+[bangs.list]
+# see here: https://duckduckgo.com/bangs
+# quick shortcuts to other search engines
+# %s will be replaced with the search query without the bang
+# "g" = "https://google.com/search?q=%s"

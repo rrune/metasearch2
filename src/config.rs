@@ -41,7 +41,7 @@ impl Default for Config {
                 weight: vec![],
             },
             bangs: BangsConfig { 
-                map: vec![],
+                list: vec![],
             },
         }
     }
@@ -422,25 +422,24 @@ impl UrlsConfig {
 #[derive(Deserialize, Debug, Default)]
 pub struct PartialBangsConfig {
     #[serde(default)]
-    pub map: HashMap<String, String>,
+    pub list: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone)]
 pub struct BangsConfig {
-    pub map: Vec<(String, String)>,
+    pub list: Vec<(String, String)>,
 }
 
 impl BangsConfig {
     pub fn overlay(&mut self, partial: PartialBangsConfig) {
-        println!("{:?}", partial.map);
-        for (bang, redirect) in partial.map { 
+        for (bang, redirect) in partial.list { 
             if redirect.is_empty() {
                 // setting the value to an empty string removes it
-                let index = self.map.iter().position(|(u, _)| u == &bang);
+                let index = self.list.iter().position(|(u, _)| u == &bang);
                 // swap_remove is fine because the order of this vec doesn't matter
-                self.map.swap_remove(index.unwrap());
+                self.list.swap_remove(index.unwrap());
             } else {
-                self.map.push((bang, redirect));
+                self.list.push((bang, redirect));
             }
         }    
     }
