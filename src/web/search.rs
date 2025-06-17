@@ -26,7 +26,7 @@ use crate::{
 fn render_beginning_of_html(search: &SearchQuery) -> String {
     let form_html = html! {
         form.search-form action="/search" method="get" {
-            input #search-input  type="text" name="q" placeholder="Search" value=(search.query) autofocus onfocus="this.select()" autocomplete="off";
+            input #search-input  type="text" name="q" placeholder="Search" value=(search.query) onfocus="this.select()" autocomplete="off";
             @if search.tab != SearchTab::default() {
                 input type="hidden" name="tab" value=(search.tab.to_string());
             }

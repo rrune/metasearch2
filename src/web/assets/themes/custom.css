@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap");
+
+:root {
+    --bg-1: #141516;
+    --bg-2: #1b1b1e;
+    --bg-3: #202224;
+    --bg-4: #645475;
+
+    --fg-1: #dbd8d4;
+    --fg-2: #9c9b9a;
+    --fg-3: #b3aca2;
+
+    --accent: #af80e2;
+
+    --link: #934cdc;
+    --link-hover: #af80e2;
+    --link-visited: #92e;
+}
+
+main {
+    padding: 1rem 1rem;
+}
+
+body {
+    font-family: 'Montserrat';
+}
+
+input,
+textarea,
+select {
+    font-family: 'Montserrat';
+}
+
+a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+.search-result {
+    border-top: none;
+    font-size: 1.2rem;
+}
+
+.search-result-url {
+    font-size: 1rem;
+    color: var(--fg-1);
+}
+
+.search-result-title {
+    font-size: 1.2rem;
+}

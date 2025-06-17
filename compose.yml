@@ -2,10 +2,18 @@ version: '3.7'
 
 services:
   metasearch2:
+    container_name: metasearch
     build:
       args:
         CONFIG: "/usr/local/bin/config.toml"
       context: .
       dockerfile: Containerfile
-    network_mode: "host"
+    #network_mode: "host"
+    networks:
+      - nginx
     restart: unless-stopped
+
+networks:
+  nginx:
+    name: nginx
+    external: true
