@@ -146,7 +146,13 @@ pub async fn get(
         // get the index of the !
         let index = query.chars().position(|c| c == '!').unwrap();
         // get the bang
-        let query_bang = query[(index + 1)..].split_whitespace().next().unwrap();
+        let query_bang = query.char_indices()
+            .nth(index+1)
+            .map(|(byte_idx, _)| &query[byte_idx..])
+            .unwrap_or("")
+            .split_whitespace()
+            .next()
+            .unwrap_or("");
 
         // iterate over every bang in config
         for bang in &config.bangs.list {
