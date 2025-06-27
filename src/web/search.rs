@@ -143,23 +143,17 @@ pub async fn get(
 
     // check if query contains a bang
     if query.contains("!") {
-        // get the index of the !
-        let index = query.chars().position(|c| c == '!').unwrap();
-        // get the bang
-        let query_bang = query.char_indices()
-            .nth(index+1)
-            .map(|(byte_idx, _)| &query[byte_idx..])
-            .unwrap_or("")
-            .split_whitespace()
-            .next()
-            .unwrap_or("");
+        // add trailing whitespace to query so no bang ever goes without a whitespace behind it
+        let query_trailing_ws = &format!("{} ", query);
 
         // iterate over every bang in config
+        // If matching found, replace the bang with "" and redirect query.
+        // If query contains multiple bangs, the first one on the list gets picked regardless of order in the query
+        // every other bang remains unchanged.
         for bang in &config.bangs.list {
-            // if correct one found, redirect
-            if bang.0 == query_bang {
+            if query_trailing_ws.contains(&format!("!{} ", bang.0)) {
                 // redirect location
-                let cleaned_query = query.replace(&format!("!{}", query_bang), "").to_owned();
+                let cleaned_query = query_trailing_ws.replacen(&format!("!{} ", bang.0), "", 1).to_owned();
                 let location= bang.1.clone().replace("%s", &cleaned_query);
                 return (
                     StatusCode::FOUND,
